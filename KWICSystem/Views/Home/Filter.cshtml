@@ -1,0 +1,31 @@
+﻿@model KWICSystem.ViewModels.DataSourceViewModel
+@{
+    ViewBag.Title = "KWIC System";
+}
+
+@using (Html.BeginForm())
+{
+    <fieldset>
+        <legend>Data Input</legend>
+        <div class="editor-field">
+            @Html.TextAreaFor(model => model.Body, new { cols = 100, rows = 10 })
+        </div>
+    </fieldset>
+    @if (Model != null)
+    {
+        <fieldset>
+            <legend>Data Output</legend>
+            <div class="editor-field">
+                <div class="editor-field">
+
+                    @Html.TextArea("Output", Model.Body, new { cols = 100, rows = 10 })
+
+                </div>
+            </div>
+        </fieldset>
+    }
+    <p>
+        <input class="btn btn-success" type="submit" value="Filter" />
+        <a class="btn btn-warning" asp-action="Filter">Clear</a>
+    </p>
+}

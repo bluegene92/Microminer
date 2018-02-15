@@ -10,9 +10,9 @@ namespace KWICSystem.Controllers
             return ParseContext(input);
         }
 
-        public IContext ParseContext(IContext input)
+        private IContext ParseContext(IContext input)
         {
-            List<string> context = input.GetContext();
+            List<string> context = input.GetBody();
             int contextCount = context.Count;
             List<string> circularList = new List<string>();
 
@@ -31,7 +31,7 @@ namespace KWICSystem.Controllers
             return input;
         }
 
-        public List<string> ParseSentence(string sentence)
+        private List<string> ParseSentence(string sentence)
         {
             List<string> circularList = new List<string>();
             int wordCount = GetWordCount(sentence);
@@ -47,7 +47,7 @@ namespace KWICSystem.Controllers
             return circularList;
         }
 
-        public string Shift(string sentence)
+        private string Shift(string sentence)
         {
             int firstSpace = sentence.IndexOf(' ');
             string firstWord = sentence.Substring(0, firstSpace);
@@ -56,7 +56,7 @@ namespace KWICSystem.Controllers
             return newSentence;
         }
 
-        public int GetWordCount(string sentence)
+        private int GetWordCount(string sentence)
         {
             int wordCount = 0;
             int index = 0;

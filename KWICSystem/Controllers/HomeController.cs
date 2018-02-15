@@ -8,6 +8,13 @@ namespace KWICSystem.Controllers
 {
     public class HomeController : Controller
     {
+        private IPipeline<IContext> _PipelineManager;
+
+        public HomeController(IPipeline<IContext> pipelineManager)
+        {
+            this._PipelineManager = pipelineManager;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -30,29 +37,24 @@ namespace KWICSystem.Controllers
                 || string.IsNullOrEmpty(dataSource.Body))
             {
                 return RedirectToAction("Filter");
-            } else
-            {
-                context.SetOfText = new List<string>(
-                    dataSource.Body.Split(
-                        new string[] { "\r\n" },
-                        StringSplitOptions.RemoveEmptyEntries
-                    )
-                );
+            } 
 
-                PipelineBuilder pipelineBuilder = new PipelineBuilder();
 
-                pipelineBuilder.Register(new CircularShiftFilter())
-                    .Register(new AlphabetizerFilter());
+            context.SetContext(new List<string>(
+                dataSource.Body.Split(
+                    new string[] { "\r\n" },
+                    StringSplitOptions.RemoveEmptyEntries
+                )
+            ));
 
-                // Reverse Filters
-                //pump.Register(new AlphabetizerFilter())
-                //    .Register(new CircularShiftFilter());
 
-                IContext result = pipelineBuilder.PerformOperation(context);
+            _PipelineManager.Register(new CircularShiftFilter())
+                            .Register(new AlphabetizerFilter(new SortByFirstChar()));
 
-                model.SetOfText = result.GetContext();
-                model.Body = string.Join("\n", model.SetOfText.ToArray());
-            }
+            model.ContextBody = _PipelineManager.PerformOperation(context)
+                                                .GetBody();
+
+            model.Body = string.Join("\n", model.ContextBody.ToArray());
             return View("Filter", model);
         }
     }

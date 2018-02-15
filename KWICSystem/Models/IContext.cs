@@ -5,7 +5,7 @@ namespace KWICSystem.Models
     public interface IContext
     {
         void AddString(string input);
-        List<string> GetContext();
+        List<string> GetBody();
         void SetContext(List<string> context);
     }
 }

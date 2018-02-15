@@ -4,26 +4,26 @@ namespace KWICSystem.Models
 {
     public class Context : IContext
     {
-        public List<string> SetOfText;
+        private List<string> Body;
 
         public Context()
         {
-            SetOfText = new List<string>();
+            Body = new List<string>();
         }
 
         public void AddString(string input)
         {
-            SetOfText.Add(input);
+            Body.Add(input);
         }
 
-        public List<string> GetContext()
+        public List<string> GetBody()
         {
-            return SetOfText;
+            return Body;
         }
 
-        public void SetContext(List<string> context)
+        public void SetContext(List<string> content)
         {
-            SetOfText = context;
+            Body = content;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using KWICSystem.Models;
+﻿using KWICSystem.Controllers;
+using KWICSystem.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -13,7 +14,8 @@ namespace KWICSystem
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            services.AddScoped<IPipeline<IContext>, PipelineBuilder>();
+            services.AddScoped<IPipeline<IContext>, PipelineManager<IContext>>();
+            services.AddSingleton<IAlgorithm<IContext>, SortByFirstChar>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -25,7 +27,6 @@ namespace KWICSystem
             }
 
             app.UseStaticFiles();
-            //app.UseNodeModules(env.ContentRootPath);
             app.UseMvcWithDefaultRoute();
         }
     }

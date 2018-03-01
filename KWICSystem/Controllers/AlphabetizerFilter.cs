@@ -4,16 +4,16 @@ namespace KWICSystem.Controllers
 {
     public class AlphabetizerFilter : IFilter<IContext>
     {
-        private SortByFirstChar _SortByFirstChar;
+        private IAlgorithm<IContext> _sortByAlphabet;
 
-        public AlphabetizerFilter(SortByFirstChar sortByFirstCharAlgorithm)
+        public AlphabetizerFilter(IAlgorithm<IContext> sortByAlphabet)
         {
-            this._SortByFirstChar = sortByFirstCharAlgorithm;
+            this._sortByAlphabet = sortByAlphabet;
         }
 
         public IContext Execute(IContext input)
         {
-            return _SortByFirstChar.run(input);
+            return _sortByAlphabet.Run(input);
         }
     }
 }

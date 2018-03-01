@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using System.Collections.Generic;
 
 namespace KWICSystem
 {
@@ -15,7 +16,8 @@ namespace KWICSystem
         {
             services.AddMvc();
             services.AddScoped<IPipeline<IContext>, PipelineManager<IContext>>();
-            services.AddSingleton<IAlgorithm<IContext>, SortByFirstChar>();
+            services.AddSingleton<IAlphabetDictionary, AlphabetDictionary>();
+            services.AddSingleton<IComparer<string>, AlphabetComparer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

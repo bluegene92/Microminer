@@ -8,11 +8,10 @@ namespace KWICSystem.Controllers
 {
     public class HomeController : Controller
     {
-        private IPipeline<IContext> _PipelineManager;
-
+        private IPipeline<IContext> _pipelineManager;
         public HomeController(IPipeline<IContext> pipelineManager)
         {
-            this._PipelineManager = pipelineManager;
+            this._pipelineManager = pipelineManager;
         }
 
         public IActionResult Index()
@@ -31,15 +30,15 @@ namespace KWICSystem.Controllers
         public IActionResult Filter(DataSource dataSource)
         {
             var model = new DataSourceViewModel();
-            var context = new Context();
+            Context context = new Context();
 
-            if (dataSource == null 
-                || string.IsNullOrEmpty(dataSource.Body))
+            if (dataSource == null || string.IsNullOrEmpty(dataSource.Body))
             {
                 return RedirectToAction("Filter");
             } 
 
 
+            // Convert textarea data into list of string
             context.SetContext(new List<string>(
                 dataSource.Body.Split(
                     new string[] { "\r\n" },
@@ -48,10 +47,19 @@ namespace KWICSystem.Controllers
             ));
 
 
-            _PipelineManager.Register(new CircularShiftFilter())
-                            .Register(new AlphabetizerFilter(new SortByFirstChar()));
+            //_pipelineManager.Register(new AlphabetizerFilter(new SortByFirstChar()))
+            //                  .Register(new CircularShiftFilter());
 
-            model.ContextBody = _PipelineManager.PerformOperation(context)
+            _pipelineManager.Register(new CircularShiftFilter())
+                            .Register(new AlphabetizerFilter(
+                                new SortByAlphabet(
+                                    new AlphabetComparer(
+                                        new AlphabetDictionary())
+                                    )
+                                )
+                            );
+
+            model.ContextBody = _pipelineManager.PerformOperation(context)
                                                 .GetBody();
 
             model.Body = string.Join("\n", model.ContextBody.ToArray());

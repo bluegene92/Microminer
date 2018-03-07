@@ -1,5 +1,4 @@
 ﻿using KWICSystem.Controllers;
-using System.Collections.Generic;
 
 namespace KWICSystem.Models
 {
@@ -16,9 +15,6 @@ namespace KWICSystem.Models
         public IContext Run(IContext input)
         {
             input.GetBody().Sort(_alphabetComparer);
-            //List<string> list = input.GetBody();
-            //list.Add("BULLSHIT");
-            //input.SetContext(list);
             return input;
         }
     }

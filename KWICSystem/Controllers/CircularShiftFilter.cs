@@ -5,6 +5,13 @@ namespace KWICSystem.Controllers
 {
     public class CircularShiftFilter : IFilter<IContext>
     {
+        private IContext _newContext;
+
+        public CircularShiftFilter(IContext context)
+        {
+            this._newContext = context;
+        }
+
         public IContext Execute(IContext input)
         {
             return ParseContext(input);
@@ -12,39 +19,25 @@ namespace KWICSystem.Controllers
 
         private IContext ParseContext(IContext input)
         {
-            List<string> context = input.GetBody();
-            int contextCount = context.Count;
-            List<string> circularList = new List<string>();
-
-            int parseIndex = 0;
-            for (int i = 0; i < contextCount; ++i)
+            for (int i = 0; i < input.GetSize(); ++i)
             {
-                circularList = ParseSentence(context[parseIndex++]);
-                if (circularList.Count > 0)
-                {
-                    for (int j = 0; j < circularList.Count; ++j)
-                    {
-                        context.Insert(parseIndex++, circularList[j]);
-                    }
-                }
+                ParseSentence(input.GetLine(i), input.WordCount(i));
             }
-            return input;
+            return this._newContext;
         }
 
-        private List<string> ParseSentence(string sentence)
+        private void ParseSentence(string sentence, int wordCount)
         {
-            List<string> circularList = new List<string>();
-            int wordCount = GetWordCount(sentence);
+            this._newContext.AddString(sentence);
             if (wordCount > 1)
             {
                 for (int i = 0; i < wordCount - 1; ++i)
                 {
                     string newSentence = Shift(sentence);
-                    circularList.Add(newSentence);
+                    this._newContext.AddString(newSentence);
                     sentence = newSentence;
                 }
             }
-            return circularList;
         }
 
         private string Shift(string sentence)
@@ -55,22 +48,5 @@ namespace KWICSystem.Controllers
             string newSentence = leftOverWords + " " + firstWord;
             return newSentence;
         }
-
-        private int GetWordCount(string sentence)
-        {
-            int wordCount = 0;
-            int index = 0;
-            while (index < sentence.Length)
-            {
-                while (index < sentence.Length && !char.IsWhiteSpace(sentence[index]))
-                    index++;
-
-                wordCount++;
-
-                while (index < sentence.Length && char.IsWhiteSpace(sentence[index]))
-                    index++;
-            }
-            return wordCount;
-        }  
     }
 }

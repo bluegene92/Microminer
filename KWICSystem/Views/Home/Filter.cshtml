@@ -2,13 +2,22 @@
 @{
     ViewBag.Title = "KWIC System";
 }
-
+<style>
+    textarea {
+        white-space: nowrap;
+    }
+</style>
 @using (Html.BeginForm())
 {
+    <br />
+    <div class="alert alert-info" role="alert">
+        <h4>@Model.Time milliseconds</h4>
+    </div>
+
     <fieldset>
         <legend>Data Input</legend>
         <div class="editor-field">
-            @Html.TextAreaFor(model => model.Body, new { cols = 100, rows = 10 })
+            @Html.TextAreaFor(model => model.Body, new { cols = 160, rows = 10 })
         </div>
     </fieldset>
     @if (Model != null)
@@ -18,7 +27,7 @@
             <div class="editor-field">
                 <div class="editor-field">
 
-                    @Html.TextArea("Output", Model.Body, new { cols = 100, rows = 10 })
+                    @Html.TextArea("Output", Model.Body, new { cols = 160, rows = 10 })
 
                 </div>
             </div>

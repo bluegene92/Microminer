@@ -6,5 +6,6 @@ namespace KWICSystem.ViewModels
     {
         public string Body { get; set; }
         public List<string> ContextBody { get; set; }
+        public double Time { get; set; }
     }
 }

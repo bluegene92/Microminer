@@ -16,8 +16,8 @@ namespace KWICSystem
         {
             services.AddMvc();
             services.AddScoped<IPipeline<IContext>, PipelineManager<IContext>>();
-            services.AddSingleton<IAlphabetDictionary, AlphabetDictionary>();
-            services.AddSingleton<IComparer<string>, AlphabetComparer>();
+            services.AddScoped<IContextStorage, ContextStorage>();
+            services.AddSingleton<IFilterFactory, FilterFactory>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

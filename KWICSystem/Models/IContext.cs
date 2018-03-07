@@ -6,6 +6,11 @@ namespace KWICSystem.Models
     {
         void AddString(string input);
         List<string> GetBody();
-        void SetContext(List<string> context);
+        void SetBody(List<string> context);
+        int GetSize();
+        string GetLine(int lineIndex);
+        string GetWord(int lineIndex, int wordIndex);
+        char GetChar(int lineIndex, int wordIndex, int letterIndex);
+        int WordCount(int lineIndex);
     }
 }

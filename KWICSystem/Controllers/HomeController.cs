@@ -57,14 +57,14 @@ namespace KWICSystem.Controllers
 
             this._contextStorage.SetContext(context);
 
-            _pipelineManager.Register(this._filterFactory.GetFilter("CircularShiftFilter"))
+            this._pipelineManager.Register(this._filterFactory.GetFilter("CircularShiftFilter"))
                             .Register(this._filterFactory.GetFilter("AlphabetizerFilter"))
                             .Register(this._filterFactory.GetFilter("NoiseWordFilter"));
 
 
 
             stopWatch.Start();
-            model.ContextBody = _pipelineManager.PerformOperation(this._contextStorage.GetContext())
+            model.ContextBody = this._pipelineManager.PerformOperation(this._contextStorage.GetContext())
                                     .GetBody();
             stopWatch.Stop();
             model.Time = stopWatch.Elapsed.TotalMilliseconds;

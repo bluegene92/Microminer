@@ -3,6 +3,6 @@
     public interface IPipeline<T>
     {
         T PerformOperation(T input);
-        PipelineManager<T> Register(IFilter<T> operation);
+       PipelineManager<T> Register(IFilter<T> operation);
     }
 }

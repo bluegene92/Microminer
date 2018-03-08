@@ -15,7 +15,9 @@ namespace KWICSystem.Models
 
         public void RemoveNoiseWord(string word)
         {
+            string wordUpper = word.ToUpper();
             this._noiseWordDictionary.Remove(word);
+            this._noiseWordDictionary.Remove(wordUpper);
         }
 
         public bool IsNoiseWord(string word)

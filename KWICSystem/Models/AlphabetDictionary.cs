@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace KWICSystem.Models
 {
@@ -20,7 +18,18 @@ namespace KWICSystem.Models
                 lowercaseLetter++;
                 uppercaseLetter++;
             }
-            charValueDictionary.Add(' ', 52);
+
+            for (char letter = ' '; letter < 'A';)
+            {
+                charValueDictionary.Add(letter, startValue++);
+                letter++;
+            }
+
+            for (char letter = '['; letter < 'a';)
+            {
+                charValueDictionary.Add(letter, startValue++);
+                letter++;
+            }
         }
 
         public int GetValue(char character)

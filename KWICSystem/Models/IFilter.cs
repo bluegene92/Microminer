@@ -2,6 +2,6 @@
 {
     public interface IFilter<T>
     {
-        T Execute(T input);
+        T Execute(ref T input);
     }
 }

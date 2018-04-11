@@ -1,32 +1,32 @@
 ﻿using KWICSystem.Models;
 using System;
+using System.Collections.Generic;
 
 namespace KWICSystem.Controllers
 {
     public class NoiseWordFilter : IFilter<IContext>
     {
-        private IContext _newContext;
         private INoiseWordDictionary _noiseWordDictionary;
 
-        public NoiseWordFilter(IContext context, INoiseWordDictionary noiseWordDictionary)
+        public NoiseWordFilter(INoiseWordDictionary noiseWordDictionary)
         {
-            this._newContext = context;
             this._noiseWordDictionary = noiseWordDictionary;
         }
 
-        public IContext Execute(IContext input)
+        public IContext Execute(ref IContext context)
         {
-            NoiseWordDictionary noiseWordDictionary = new NoiseWordDictionary();
-            for (int i = 0; i < input.GetSize(); ++i)
+            List<Tuple<int, int>> indexTable = new List<Tuple<int, int>>();
+            for (int i = 0; i < context.GetIndexTable().Count; i++)
             {
-                // Get first word of each line
-                string firstWord = input.GetWord(i, 0);
+                string tempLine = context.GetLine(context.GetIndexTable()[i]);
+                var firstWord = tempLine.Substring(0, tempLine.IndexOf(" "));
                 if (!this._noiseWordDictionary.IsNoiseWord(firstWord))
                 {
-                    this._newContext.AddString(input.GetLine(i));
+                    indexTable.Add(context.GetIndexTable()[i]);
                 }
             }
-            return this._newContext;
+            context.SetIndexTable(ref indexTable);
+            return context;
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace KWICSystem.Models
 {
@@ -6,14 +8,13 @@ namespace KWICSystem.Models
     {
         private List<string> _body;
 
+        // <lineNumber, indexOffset>
+        private List<Tuple<int, int>> _indexTable;
+
         public Context()
         {
             this._body = new List<string>();
-        }
-
-        public void AddString(string input)
-        {
-            this._body.Add(input);
+            this._indexTable = new List<Tuple<int, int>>();
         }
 
         public List<string> GetBody()
@@ -26,30 +27,49 @@ namespace KWICSystem.Models
             this._body = content;
         }
 
+        public void SetIndexTable(ref List<Tuple<int, int>> indexTable)
+        {
+            this._indexTable = indexTable;
+        }
+
+        public List<Tuple<int, int>> GetIndexTable()
+        {
+            return this._indexTable;
+        }
+
         public int GetSize()
         {
             return this._body.Count;
         }
 
-        public string GetLine(int lineIndex)
+        public string GetLine(Tuple<int, int> tuple)
         {
-            return this._body[lineIndex];
+            int length = this._body[tuple.Item1].Length;
+            this._body[tuple.Item1] = this._body[tuple.Item1].Replace("\t", " ");
+            var match = Regex.Match(this._body[tuple.Item1], @"\bhttp|https\b");
+            int urlIndex;
+            if (match.Success)
+            {
+                urlIndex = match.Index;
+            } else
+            {
+                urlIndex = this._body[tuple.Item1].Length;
+            }
+
+            string rightString = this._body[tuple.Item1]
+                                .Substring(tuple.Item2, urlIndex - tuple.Item2);
+            string leftString = this._body[tuple.Item1]
+                                .Substring(0, tuple.Item2);
+            return rightString + " " + leftString + " " + this._body[tuple.Item1].Substring(urlIndex);
         }
 
-        public string GetWord(int lineIndex, int wordIndex)
+        public List<string> GetOutput()
         {
-            string line = this._body[lineIndex];
-            string[] words = line.Split(' ');
-            return words[wordIndex];
-        }
-
-        public char GetChar(int lineIndex, int wordIndex, int letterIndex)
-        {
-            string line = this._body[lineIndex];
-            string[] words = line.Split(' ');
-            string word = words[wordIndex];
-            char letter = word[letterIndex];
-            return letter;
+            List<string> outputContext = new List<string>();
+            this._indexTable.ForEach(tuple => {
+                outputContext.Add(GetLine(tuple));
+            });
+            return outputContext;
         }
 
         public int WordCount(int lineIndex)

@@ -30,6 +30,7 @@ namespace KWICSystem.Models
                 charValueDictionary.Add(letter, startValue++);
                 letter++;
             }
+            charValueDictionary.Add('\t', startValue++);
         }
 
         public int GetValue(char character)

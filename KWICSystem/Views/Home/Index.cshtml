@@ -1,13 +1,41 @@
-﻿
+﻿@model KWICSystem.ViewModels.SearchKeywordViewModel
 @{
     ViewBag.Title = "Home Page";
 }
-<div class="jumbotron jumbotron-fluid">
-    <div class="container">
-        <h1 class="display-4">Pipe and Filter</h1>
-        <p class="lead"></p>
+
+@using (Html.BeginForm())
+{
+    <br />
+    <div class="alert alert-info" role="alert">
+        <h4>@Model.Time milliseconds</h4>
     </div>
-</div>
+
+    <fieldset>
+        <legend>Search</legend>
+        <div class="editor-field form-group">
+            @Html.TextBoxFor(model => model.Body, new { @class = "form-control" })
+        </div>
+    </fieldset>
+    @if (Model.ResultBody != null)
+    {
+        <fieldset>
+            <legend>Output</legend>
+            <div class="editor-field">
+                <div class="editor-field">
+                    @Html.TextArea("Output", Model.ResultBody, new { @class = "form-control", rows = 10 })
+                </div>
+            </div>
+        </fieldset>
+
+    }
+    <br />
+    <br />
+    <p>
+        <input class="btn btn-success" type="submit" value="Search" />
+        <a class="btn btn-warning" asp-action="Index">Clear</a>
+    </p>
+}
+
 @section footer {
     <div>
         <p>

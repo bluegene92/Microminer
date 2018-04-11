@@ -9,14 +9,12 @@ namespace KWICSystem.Controllers
         {
             if (name.Equals("CircularShiftFilter", StringComparison.InvariantCultureIgnoreCase))
             {
-                return new CircularShiftFilter(new Context());
+                return new CircularShiftFilter();
             }
 
             if (name.Equals("AlphabetizerFilter", StringComparison.InvariantCultureIgnoreCase))
             {
-                return new AlphabetizerFilter(new Context(), 
-                                              new SortByAlphabet(new AlphabetComparer(new AlphabetDictionary()))
-                                              );
+                return new AlphabetizerFilter(new SortByAlphabet(new AlphabetDictionary()));
             }
 
             if (name.Equals("NoiseWordFilter", StringComparison.InvariantCultureIgnoreCase))
@@ -38,7 +36,7 @@ namespace KWICSystem.Controllers
                 noiseWordDictionary.AddNoiseWord("as");
                 noiseWordDictionary.AddNoiseWord("at");
                 noiseWordDictionary.AddNoiseWord("off");
-                return new NoiseWordFilter(new Context(), noiseWordDictionary);
+                return new NoiseWordFilter(noiseWordDictionary);
             }
 
             return null;

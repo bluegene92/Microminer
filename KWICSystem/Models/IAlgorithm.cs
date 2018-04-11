@@ -2,6 +2,6 @@
 {
     public interface IAlgorithm<T>
     {
-        T Run(T input);
+        T Run(ref T input);
     }
 }

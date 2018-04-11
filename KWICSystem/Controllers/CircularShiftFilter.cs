@@ -1,52 +1,54 @@
 ﻿using KWICSystem.Models;
+using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace KWICSystem.Controllers
 {
     public class CircularShiftFilter : IFilter<IContext>
     {
-        private IContext _newContext;
-
-        public CircularShiftFilter(IContext context)
+        public IContext Execute(ref IContext input)
         {
-            this._newContext = context;
+            return BuildCircularIndexTable(ref input);
         }
 
-        public IContext Execute(IContext input)
+        public IContext BuildCircularIndexTable(ref IContext context)
         {
-            return ParseContext(input);
-        }
+            List<Tuple<int, int>> indexTable = new List<Tuple<int, int>>();
 
-        private IContext ParseContext(IContext input)
-        {
-            for (int i = 0; i < input.GetSize(); ++i)
+            for (int i = 0; i < context.GetSize(); i++)
             {
-                ParseSentence(input.GetLine(i), input.WordCount(i));
-            }
-            return this._newContext;
-        }
-
-        private void ParseSentence(string sentence, int wordCount)
-        {
-            this._newContext.AddString(sentence);
-            if (wordCount > 1)
-            {
-                for (int i = 0; i < wordCount - 1; ++i)
+                int index = 0;
+                bool firstLetter = false;
+                var matchHttp = Regex.Match(context.GetBody()[i], @"\bhttp|https\b");
+                int urlIndexHttp = matchHttp.Index;
+                if (matchHttp.Success)
                 {
-                    string newSentence = Shift(sentence);
-                    this._newContext.AddString(newSentence);
-                    sentence = newSentence;
+                    urlIndexHttp = matchHttp.Index;
+                } else
+                {
+                    urlIndexHttp = context.GetBody()[i].Length;
+                }
+               
+                while (index < urlIndexHttp)
+                {
+                    while (index < urlIndexHttp &&
+                            !char.IsWhiteSpace(context.GetBody()[i][index]) &&
+                            !firstLetter)
+                    {
+                        context.GetIndexTable().Add(Tuple.Create(i, index));
+                        firstLetter = true;
+                    }
+                    index++;
+                    while (index < urlIndexHttp && 
+                        char.IsWhiteSpace(context.GetBody()[i][index]))
+                    {
+                        firstLetter = false;
+                        index++;
+                    }
                 }
             }
-        }
-
-        private string Shift(string sentence)
-        {
-            int firstSpace = sentence.IndexOf(' ');
-            string firstWord = sentence.Substring(0, firstSpace);
-            string leftOverWords = sentence.Substring(firstSpace + 1);
-            string newSentence = leftOverWords + " " + firstWord;
-            return newSentence;
+            return context;
         }
     }
 }

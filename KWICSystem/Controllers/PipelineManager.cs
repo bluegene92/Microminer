@@ -15,7 +15,7 @@ namespace KWICSystem.Models
 
         public T PerformOperation(T input)
         {
-            return this.operations.Aggregate(input, (current, operations) => operations.Execute(current));
+            return this.operations.Aggregate(input, (current, operations) => operations.Execute(ref current));
         }
     }
 }
